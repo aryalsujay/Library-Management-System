@@ -1,0 +1,7 @@
+Refer Gfg
+1. Parametrised connection - mySQL prepared statements - prepare and bind
+    Reason : lala' OR '1=1 - able to login saying 1=1
+2. Pagination - add page buttons like next, prev
+    Reason : If 1Lakh record then all books display at once
+3. Add Search button - be able to search using all db
+    Reason : To browse

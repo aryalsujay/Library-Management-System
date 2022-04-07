@@ -151,6 +151,8 @@
         //Admin
         function adminLogin($t1,$t2){
             $q="SELECT * FROM admin where email='$t1' and pass='$t2'";
+            //echo $q; 
+            //exit(1);
             $recordSet=$this->connection->query($q);
             $result=$recordSet->rowCount();
 

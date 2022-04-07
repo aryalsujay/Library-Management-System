@@ -83,3 +83,9 @@
     <script src="" async defer></script>
 </body>
 </html>
+
+
+Refer Gfg
+1. Parametrised connection - mySQL prepared statements - prepare and bind
+2. Pagination - add page buttons like next, prev
+3. Add Search button - be able to search using all db
