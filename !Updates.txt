@@ -1,7 +1,7 @@
 Refer Gfg
 1. Parametrised connection - mySQL prepared statements - prepare and bind
-    Reason : lala' OR '1=1 - able to login saying 1=1
+    Reason : lala' OR '1=1 - able to login: $A=lala, $B= 1=1 so $A OR $B - since 1=1 is true so it fetches all passwords from table and logs in.
 2. Pagination - add page buttons like next, prev
     Reason : If 1Lakh record then all books display at once
 3. Add Search button - be able to search using all db
-    Reason : To browse
+    Reason : To browse, join all db's
