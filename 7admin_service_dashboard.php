@@ -1,7 +1,7 @@
 <?php include "5data_class.php";
-    //if(empty($_SESSION['adminid'])){
-      //  header("Location:1index.php?msg=Login first");
-    //}
+    if(empty($_SESSION['adminid'])){
+        header("Location:1index.php?msg=Invalid");
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,11 +12,16 @@
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
       <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
       <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="!style.css">
+    <!-- <link rel="stylesheet" href="!style.css"> -->
+    <!-- Load icon library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <title>Document</title>
 </head>
 <style>
-.container,
+.container{
+    text-align: center;
+}
 .row,
 .imglogo{
     margin: auto;
@@ -44,7 +49,45 @@
     margin:3px;
     cursor: pointer;
 }
+* {
+  box-sizing: border-box;
+}
 
+/* Style the search field */
+form.example input[type=text] {
+  padding: 10px;
+  font-size: 17px;
+  border: 1px solid grey;
+  float: center;
+  width: 80%;
+  text-align: center;
+  background: #f1f1f1;
+  margin-bottom: 200px;
+}
+
+/* Style the submit button */
+form.example button {
+  float: center;
+  width: 10%;
+  padding: 10px;
+  background: #2196F3;
+  color: white;
+  font-size: 17px;
+  border: 1px solid grey;
+  border-left: none; /* Prevent double borders */
+  cursor: pointer;
+}
+
+form.example button:hover {
+  background: #0b7dda;
+}
+
+/* Clear floats */
+form.example::after {
+  content: "";
+  clear: both;
+  display: table;
+}
 th{
     background-color: orange;
     color: black;
@@ -62,8 +105,13 @@ th{
     
 </style>
 <body>
-    <div class="container">
-        <div class="innerdiv">
+    
+    <div class="container">  
+    <form class="example" action="searchpage.php">
+        <input type="text" placeholder="Search..." name="search" style="margin:auto;max-width:300px">
+        <button type="submit"><i class="fa fa-search"></i></button>
+        </form>  
+        <div class="innerdiv">      
             <div class="row"><img class="imglogo" src="images/logo.png"></div>
             <div class="leftinnerdiv">
                 <Button class="greenbtn">Admin</Button>

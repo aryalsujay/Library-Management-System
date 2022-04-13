@@ -1,6 +1,6 @@
 <?php include "4db.php";
 
-//session_start();
+session_start();
     class data extends db{
         private $bookauthor;
         private $bookdetail;
@@ -150,22 +150,30 @@
         }
         //Admin
         function adminLogin($t1,$t2){
-            $q="SELECT * FROM admin where email='$t1' and pass='$t2'";
-            //echo $q; 
-            //exit(1);
-            $recordSet=$this->connection->query($q);
-            $result=$recordSet->rowCount();
+            
+            try{
+                $q="SELECT * FROM admin where email=:em and pass=:ps";
+                //echo $q; 
+                //exit(1);
+                $recordSet=$this->connection->prepare($q);
+                $recordSet->bindParam(':em',$t1);
+                $recordSet->bindParam(':ps',$t2);
+                $recordSet->execute();
+                $row=$recordSet->fetch(PDO::FETCH_ASSOC);
+                //$result=$recordSet->rowCount();
 
-            if($result > 0){
-                foreach($recordSet->fetchAll() as $row){
-                    $logid=$row['id'];
-                    //$_SESSION["adminid"]=$logid;                  
-                header("Location:7admin_service_dashboard.php?adminid=$logid");
+                //if($result > 0){
+                    //foreach($recordSet->fetchAll() as $row){
+                        $logid=$row['id'];
+                        $_SESSION["adminid"]=$logid;                  
+                    header("Location:7admin_service_dashboard.php");
+                    //}
                 }
-            }
-            else{
-                header("Location:1index.php?msg=Invalid Credentials");
-            }
+                catch (PDOException $e) 
+                {
+                    header("Location:1index.php?msg=Invalid Credentials");
+                }
+            
         }
         function addperson($name,$email,$pass,$type){
             $this->name=$name;

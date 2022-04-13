@@ -39,7 +39,7 @@
         }
     ?>
 
-    <h2>Pala</h2>
+    <a href="1index.php"><h2>Pala</h2></a>
     <div class="container login-container">
         <div class="row"><h4><?php echo $msg?></h4></div>
         <div class="row">
@@ -83,9 +83,3 @@
     <script src="" async defer></script>
 </body>
 </html>
-
-
-Refer Gfg
-1. Parametrised connection - mySQL prepared statements - prepare and bind
-2. Pagination - add page buttons like next, prev
-3. Add Search button - be able to search using all db
