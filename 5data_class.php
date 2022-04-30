@@ -21,46 +21,44 @@ session_start();
             if(!empty($_POST['search']['keyword'])) {
                 $search_keyword = $_POST['search']['keyword'];
             }      
-        //$sql= 'SELECT * FROM user WHERE name LIKE :keyword OR email LIKE :keyword OR type LIKE :keyword ORDER BY id DESC';
-        $sql='SELECT u.id,u.name,u.email,u.type,i.issuebook,i.issuedays,i.issuedate FROM user u INNER JOIN issuebook i ON u.id=i.userid WHERE u.name LIKE :keyword OR u.email LIKE :keyword OR u.type LIKE :keyword OR i.issuebook LIKE :keyword OR i.issuedays LIKE :keyword OR i.issuedate LIKE :keyword ORDER BY id DESC';
+            //$sql= 'SELECT * FROM user WHERE name LIKE :keyword OR email LIKE :keyword OR type LIKE :keyword ORDER BY id DESC';
+            $sql='SELECT u.id,u.name,u.email,u.type,i.issuebook,i.issuedays,i.issuedate,i.issuereturn FROM user u INNER JOIN issuebook i ON u.id=i.userid WHERE u.name LIKE :keyword OR u.email LIKE :keyword OR u.type LIKE :keyword OR i.issuebook LIKE :keyword OR i.issuedays LIKE :keyword OR i.issuedate LIKE :keyword OR i.issuereturn LIKE :keyword ORDER BY id DESC';
 
-        //Pagination Code
-        $per_page_html = '';
-        $page = 1;
-        $start=0;
-        if(!empty($_POST["page"])) {
-            $page = $_POST["page"];
-            $start=($page-1) * 3;
-        }
-        $limit=" limit " . $start . "," . 3;
-        $pagination_statement = $this->connection->prepare($sql);
-        $pagination_statement->bindValue(':keyword', '%' . $search_keyword . '%', PDO::PARAM_STR);
-        $pagination_statement->execute();
+            //Pagination Code
+            $per_page_html = '';
+            $page = 1;
+            $start=0;
+            if(!empty($_POST["page"])) {
+                $page = $_POST["page"];
+                $start=($page-1) * 2;
+            }
+            $limit=" limit " . $start . "," . 2;
+            $pagination_statement = $this->connection->prepare($sql);
+            $pagination_statement->bindValue(':keyword', '%' . $search_keyword . '%', PDO::PARAM_STR);
+            $pagination_statement->execute();
 
-        $row_count = $pagination_statement->rowCount();
-        if(!empty($row_count)){
-            $per_page_html .= "<div style='text-align:center;margin:20px 0px;'>";
-            $page_count=ceil($row_count/3);
-            if($page_count>1) {
-                for($i=1;$i<=$page_count;$i++){
-                    if($i==$page){
-                        $per_page_html .= '<input type="submit" name="page" value="' . $i . '" class="btn-page current" />';
-                    } else {
-                        $per_page_html .= '<input type="submit" name="page" value="' . $i . '" class="btn-page" />';
+            $row_count = $pagination_statement->rowCount();
+            if(!empty($row_count)){
+                $per_page_html .= "<div style='text-align:center;margin:20px 0px;'>";
+                $page_count=ceil($row_count/2);
+                if($page_count>1) {
+                    for($i=1;$i<=$page_count;$i++){
+                        if($i==$page){
+                            $per_page_html .= '<input type="submit" name="page" value="' . $i . '" class="btn-page current" />';
+                        } else {
+                            $per_page_html .= '<input type="submit" name="page" value="' . $i . '" class="btn-page" />';
+                        }
                     }
                 }
+                $per_page_html .= "</div>";
             }
-            $per_page_html .= "</div>";
-        }
-        
-        
-
-        $query = $sql.$limit;
-        $pdo_statement = $this->connection->prepare($query);
-        $pdo_statement->bindValue(':keyword', '%' . $search_keyword . '%', PDO::PARAM_STR);
-        $pdo_statement->execute();
-        $result = $pdo_statement->fetchAll();
-        return $result;        
+            
+            $query = $sql.$limit;
+            $pdo_statement = $this->connection->prepare($query);
+            $pdo_statement->bindValue(':keyword', '%' . $search_keyword . '%', PDO::PARAM_STR);
+            $pdo_statement->execute();
+            $result = $pdo_statement->fetchAll();
+            return $result;        
         }
         
         /* function search1() {
