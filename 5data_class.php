@@ -21,8 +21,9 @@ session_start();
             if(!empty($_POST['search']['keyword'])) {
                 $search_keyword = $_POST['search']['keyword'];
             }      
-        //$sql='INSERT INTO q(name,email,type,issuebook,issuedays,issuedate) SELECT * FROM user UNION ALL SELECT * FROM issuebook';'SELECT * FROM q WHERE name LIKE :keyword OR email LIKE :keyword OR type LIKE :keyword OR issuebook LIKE :keyword OR issuedays LIKE :keyword OR issuedate LIKE :keyword ORDER BY id DESC';
-        $sql= 'SELECT * FROM user WHERE name LIKE :keyword OR email LIKE :keyword OR type LIKE :keyword ORDER BY id DESC';
+        //$sql= 'SELECT * FROM user WHERE name LIKE :keyword OR email LIKE :keyword OR type LIKE :keyword ORDER BY id DESC';
+        $sql='SELECT u.id,u.name,u.email,u.type,i.issuebook,i.issuedays,i.issuedate FROM user u INNER JOIN issuebook i ON u.id=i.userid WHERE u.name LIKE :keyword OR u.email LIKE :keyword OR u.type LIKE :keyword OR i.issuebook LIKE :keyword OR i.issuedays LIKE :keyword OR i.issuedate LIKE :keyword ORDER BY id DESC';
+
         //Pagination Code
         $per_page_html = '';
         $page = 1;
@@ -59,17 +60,10 @@ session_start();
         $pdo_statement->bindValue(':keyword', '%' . $search_keyword . '%', PDO::PARAM_STR);
         $pdo_statement->execute();
         $result = $pdo_statement->fetchAll();
-        return $result;
-
-        
-        
-        //return $result=array[$result,$result1];
-   
-        //return $result1;
-        
-        
+        return $result;        
         }
-        function search1() {
+        
+        /* function search1() {
 
             $search_keyword = '';
             if(!empty($_POST['search']['keyword'])) {
@@ -82,7 +76,7 @@ session_start();
         $pdo_statement1->execute();
         $result1 = $pdo_statement1->fetchAll();
         return $result1;
-        }
+        } */
 
         function userLogin($t1,$t2){
            /* $q="SELECT * FROM user where email='$t1' and pass='$t2'";
