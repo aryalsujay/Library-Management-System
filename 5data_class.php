@@ -16,8 +16,76 @@ session_start();
         private $date;
         private $returnDate;
 
+        function search(){
+            $search_keyword = '';
+            if(!empty($_POST['search']['keyword'])) {
+                $search_keyword = $_POST['search']['keyword'];
+            }      
+        //$sql='INSERT INTO q(name,email,type,issuebook,issuedays,issuedate) SELECT * FROM user UNION ALL SELECT * FROM issuebook';'SELECT * FROM q WHERE name LIKE :keyword OR email LIKE :keyword OR type LIKE :keyword OR issuebook LIKE :keyword OR issuedays LIKE :keyword OR issuedate LIKE :keyword ORDER BY id DESC';
+        $sql= 'SELECT * FROM user WHERE name LIKE :keyword OR email LIKE :keyword OR type LIKE :keyword ORDER BY id DESC';
+        //Pagination Code
+        $per_page_html = '';
+        $page = 1;
+        $start=0;
+        if(!empty($_POST["page"])) {
+            $page = $_POST["page"];
+            $start=($page-1) * 3;
+        }
+        $limit=" limit " . $start . "," . 3;
+        $pagination_statement = $this->connection->prepare($sql);
+        $pagination_statement->bindValue(':keyword', '%' . $search_keyword . '%', PDO::PARAM_STR);
+        $pagination_statement->execute();
+
+        $row_count = $pagination_statement->rowCount();
+        if(!empty($row_count)){
+            $per_page_html .= "<div style='text-align:center;margin:20px 0px;'>";
+            $page_count=ceil($row_count/3);
+            if($page_count>1) {
+                for($i=1;$i<=$page_count;$i++){
+                    if($i==$page){
+                        $per_page_html .= '<input type="submit" name="page" value="' . $i . '" class="btn-page current" />';
+                    } else {
+                        $per_page_html .= '<input type="submit" name="page" value="' . $i . '" class="btn-page" />';
+                    }
+                }
+            }
+            $per_page_html .= "</div>";
+        }
+        
+        
+
+        $query = $sql.$limit;
+        $pdo_statement = $this->connection->prepare($query);
+        $pdo_statement->bindValue(':keyword', '%' . $search_keyword . '%', PDO::PARAM_STR);
+        $pdo_statement->execute();
+        $result = $pdo_statement->fetchAll();
+        return $result;
+
+        
+        
+        //return $result=array[$result,$result1];
+   
+        //return $result1;
+        
+        
+        }
+        function search1() {
+
+            $search_keyword = '';
+            if(!empty($_POST['search']['keyword'])) {
+                $search_keyword = $_POST['search']['keyword'];
+            } 
+
+            $sql1= 'SELECT * FROM issuebook WHERE issuebook LIKE :keyword OR issuedays LIKE :keyword OR issuedate LIKE :keyword ORDER BY userid DESC';
+        $pdo_statement1 = $this->connection->prepare($sql1);
+        $pdo_statement1->bindValue(':keyword', '%' . $search_keyword . '%', PDO::PARAM_STR);
+        $pdo_statement1->execute();
+        $result1 = $pdo_statement1->fetchAll();
+        return $result1;
+        }
+
         function userLogin($t1,$t2){
-            $q="SELECT * FROM user where email='$t1' and pass='$t2'";
+           /* $q="SELECT * FROM user where email='$t1' and pass='$t2'";
             $recordSet=$this->connection->query($q);
             $result=$recordSet->rowCount();
 
@@ -29,7 +97,31 @@ session_start();
             }
             else{
                 header("Location:1index.php?msg=Invalid Credentials");
-            }
+            } */
+
+            try{
+                $q="SELECT * FROM user where email=:em and pass=:ps";
+                //echo $q; 
+                //exit(1);
+                $recordSet=$this->connection->prepare($q);
+                $recordSet->bindParam(':em',$t1);
+                $recordSet->bindParam(':ps',$t2);
+                $recordSet->execute();
+                $row=$recordSet->fetch(PDO::FETCH_ASSOC);
+                //$result=$recordSet->rowCount();
+
+                //if($result > 0){
+                    //foreach($recordSet->fetchAll() as $row){
+                        $logid=$row['id'];
+                        $_SESSION["userid"]=$logid;                  
+                    header("Location:6user_service_dashboard.php?userlogid=$logid");
+                    //}
+                }
+                catch (PDOException $e) 
+                {
+                    header("Location:1index.php?msg=Invalid Credentials");
+                }
+
         }
         function userdetail($id){
             $q="SELECT * FROM user where id='$id'";
@@ -213,6 +305,7 @@ session_start();
             return $data;
         }
         function studentrecord(){
+           
             $q="SELECT * FROM user";
             $data=$this->connection->query($q);
             return $data;

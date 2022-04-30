@@ -1,4 +1,5 @@
 <?php include "5data_class.php";
+define("ROW_PER_PAGE",2);
     if(empty($_SESSION['adminid'])){
         header("Location:1index.php?msg=Invalid");
     }
@@ -102,19 +103,27 @@ th{
     a{
         text-decoration: none;
     }
-    
+   
+    .tbl-qa{width: 100%;font-size:0.9em;background-color: #f5f5f5;}
+.tbl-qa th.table-header {padding: 5px;text-align: left;padding:10px;}
+.tbl-qa .table-row td {padding:10px;background-color: #FDFDFD;vertical-align:top;}
+.button_link {color:#FFF;text-decoration:none; background-color:#428a8e;padding:10px;}
+#keyword{border: #CCC 1px solid; border-radius: 4px; padding: 7px;background:url("demo-search-icon.png") no-repeat center right 7px;}
+.btn-page{margin-right:10px;padding:5px 10px; border: #CCC 1px solid; background:#FFF; border-radius:4px;cursor:pointer;}
+.btn-page:hover{background:#F0F0F0;}
+.btn-page.current{background:#F0F0F0;}
 </style>
 <body>
     
     <div class="container">  
-    <form class="example" action="searchpage.php">
-        <input type="text" placeholder="Search..." name="search" style="margin:auto;max-width:300px">
-        <button type="submit"><i class="fa fa-search"></i></button>
-        </form>  
+    <!-- <form class="example" action="7admin_service_dashboard.php" method="post">
+        <input type="text" placeholder="Search..." name="search" style="margin:auto;max-width:300px"> value=" 
+        <button type="submit"><i class="fa fa-search"></i></button> 
+    -->
         <div class="innerdiv">      
             <div class="row"><img class="imglogo" src="images/logo.png"></div>
             <div class="leftinnerdiv">
-                <Button class="greenbtn">Admin</Button>
+                <Button class="greenbtn" onclick="openpart('search')">Search</Button>
                 <Button class="greenbtn" onclick="openpart('addbook')">Add book</Button>
                 <Button class="greenbtn" onclick="openpart('bookreport')">Book Report</Button>
                 <Button class="greenbtn" onclick="openpart('bookrequestapprove')">Book Request</Button>
@@ -125,8 +134,9 @@ th{
                 <a href="1index.php"><Button class="greenbtn">Logout</Button></a>
             </div>
 
-            <div class="rightinnerdiv">
-                <div id="addbook" class="innerright portion" style="<?php if(!empty($_REQUEST['viewid'])){echo "display:none";}else{echo "";} ?>">               
+            
+            <div class="rightinnerdiv">                
+                <div id="addbook" class="innerright portion" style="display:none">               
                 <Button class="greenbtn">Add Book</Button>
                     <form action="9addbook_page.php" method="post" enctype="multipart/form-data">
                         <label>BookName: </label><input type="text"  name="bookname"/>
@@ -151,6 +161,80 @@ th{
                 </div>
             </div>
             
+            <div class="rightinnerdiv"> 
+                <div id="search" class="innerright portion" style="<?php if(!empty($_REQUEST['viewid'])){echo "display:none";}else{echo "";} ?>">               
+                <Button class="greenbtn">Search</Button>
+                
+                
+                <form name='frmSearch' action='' method='post'>
+                <div style='text-align:center;margin:20px 0px;'>
+                <input type='text' name='search[keyword]' id='keyword'>
+                <button type="submit"><i class="fa fa-search"></i></button>
+                </div>
+                <br>
+                <br>
+                
+                <table class='tbl-qa'>
+                <thead>
+                    <tr>
+                    <th class='table-header' width='20%'>Name</th>
+                    <th class='table-header' width='40%'>Email</th>
+                    <th class='table-header' width='20%'>Type</th>
+                    
+                    </tr>
+                </thead>
+                <tbody id='table-body'>
+                    <?php
+                    
+                
+                    $u= new data;
+                    $u->setconnection();
+                    $u->search();
+                    $result=$u->search();
+                    
+            
+                    if(!empty($result)) { 
+                        foreach($result as $row) {
+                    ?>
+                    <tr class='table-row'>
+                        <td><?php echo $row['name']; ?></td>
+                        <td><?php echo $row['email']; ?></td>
+                        <td><?php echo $row['type']; ?></td>
+                        </tr>
+                    <?php
+                        }
+                    }
+                    ?>
+                    <th class='table-header' width='20%'>Issuebook</th>
+                    <th class='table-header' width='20%'>Days</th>
+                    <th class='table-header' width='20%'>Issuedate</th>
+                    <?php
+                    $u=new data;
+                    $u->setconnection();
+                    $u->search1();
+                    $result1=$u->search1();
+                    if(!empty($result1)) { 
+                        foreach($result1 as $row) {
+                    ?>
+                    <tr class='table-row'>
+                        <td><?php echo $row['issuebook']; ?></td>
+                        <td><?php echo $row['issuedays']; ?></td>
+                        <td><?php echo $row['issuedate']; ?></td>
+                    </tr>
+                    <?php
+                        }
+                    }
+                    ?>
+                </tbody>
+                </table>
+                  
+                
+                
+                </form>
+                </div>
+            </div>
+
+
             <div class="rightinnerdiv">
                 <div id="addperson" class="innerright portion" style="display:none">
                     <Button class="greenbtn">Add Person</Button>
