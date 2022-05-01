@@ -165,72 +165,70 @@ th{
                 <div id="search" class="innerright portion" style="<?php if(!empty($_REQUEST['viewid'])){echo "display:none";}else{echo "";} ?>">               
                 <Button class="greenbtn">Search</Button>
                 
-                <form name='frmSearch' action='' method='post'>
-                <div style='text-align:center;margin:20px 0px;'>
-                <input type='text' name='search[keyword]' id='keyword'>
-                <button type="submit"><i class="fa fa-search"></i></button>
-                </div>
-                <br>
-                <br>                
-                <table class='tbl-qa'>
-                <thead>
-                    <tr>
-                    <th class='table-header' width='20%'>Name</th>
-                    <th class='table-header' width='40%'>Email</th>
-                    <th class='table-header' width='20%'>Type</th>
-                    <th class='table-header' width='20%'>Issuebook</th>
-                    <th class='table-header' width='20%'>Days</th>
-                    <th class='table-header' width='20%'>Issuedate</th>
-                    <th class='table-header' width='20%'>Issuereturn</th>
-                    </tr>
-                </thead>
-                <tbody id='table-body'>
-                    <?php require_once('4.1db.php');                  
+                <?php require_once('4.1db.php');
                     //$u= new data;
                     //$u->setconnection();
                     //$u->search();
                     //$result=$u->search();  
-                    $search_keyword = '';
-                    if(!empty($_POST['search']['keyword'])) {
-                        $search_keyword = $_POST['search']['keyword'];
-                    }      
-                    //$sql= 'SELECT * FROM user WHERE name LIKE :keyword OR email LIKE :keyword OR type LIKE :keyword ORDER BY id DESC';
-                    $sql='SELECT u.id,u.name,u.email,u.type,i.issuebook,i.issuedays,i.issuedate,i.issuereturn FROM user u INNER JOIN issuebook i ON u.id=i.userid WHERE u.name LIKE :keyword OR u.email LIKE :keyword OR u.type LIKE :keyword OR i.issuebook LIKE :keyword OR i.issuedays LIKE :keyword OR i.issuedate LIKE :keyword OR i.issuereturn LIKE :keyword ORDER BY id DESC';
+                $search_keyword = '';
+                if(!empty($_POST['search']['keyword'])) {
+                    $search_keyword = $_POST['search']['keyword'];
+                }
+                //$sql= 'SELECT * FROM user WHERE name LIKE :keyword OR email LIKE :keyword OR type LIKE :keyword ORDER BY id DESC';
+                $sql='SELECT u.id,u.name,u.email,u.type,i.issuebook,i.issuedays,i.issuedate,i.issuereturn FROM user u INNER JOIN issuebook i ON u.id=i.userid WHERE u.name LIKE :keyword OR u.email LIKE :keyword OR u.type LIKE :keyword OR i.issuebook LIKE :keyword OR i.issuedays LIKE :keyword OR i.issuedate LIKE :keyword OR i.issuereturn LIKE :keyword ORDER BY id DESC';
 
-                    //Pagination Code
-                    $per_page_html = '';
-                    $page = 1;
-                    $start=0;
-                    if(!empty($_POST["page"])) {
-                        $page = $_POST["page"];
-                        $start=($page-1) * 2;
-                    }
-                    $limit=" limit " . $start . "," . 2;
-                    $pagination_statement = $pdo_conn->prepare($sql);
-                    $pagination_statement->bindValue(':keyword', '%' . $search_keyword . '%', PDO::PARAM_STR);
-                    $pagination_statement->execute();
+                /* Pagination Code starts */
+                $per_page_html = '';
+                $page = 1;
+                $start=0;
+                if(!empty($_POST["page"])) {
+                    $page = $_POST["page"];
+                    $start=($page-1) * 2;
+                }
+                $limit=" limit " . $start . "," . 2;
+                $pagination_statement = $pdo_conn->prepare($sql);
+                $pagination_statement->bindValue(':keyword', '%' . $search_keyword . '%', PDO::PARAM_STR);
+                $pagination_statement->execute();
 
-                    $row_count = $pagination_statement->rowCount();
-                    if(!empty($row_count)){
-                        $per_page_html .= "<div style='text-align:center;margin:20px 0px;'>";
-                        $page_count=ceil($row_count/2);
-                        if($page_count>1) {
-                            for($i=1;$i<=$page_count;$i++){
-                                if($i==$page){
-                                    $per_page_html .= '<input type="submit" name="page" value="' . $i . '" class="btn-page current" />';
-                                } else {
-                                    $per_page_html .= '<input type="submit" name="page" value="' . $i . '" class="btn-page" />';
-                                }
+                $row_count = $pagination_statement->rowCount();
+                if(!empty($row_count)){
+                    $per_page_html .= "<div style='text-align:center;margin:20px 0px;'>";
+                    $page_count=ceil($row_count/2);
+                    if($page_count>1) {
+                        for($i=1;$i<=$page_count;$i++){
+                            if($i==$page){
+                                $per_page_html .= '<input type="submit" name="page" value="' . $i . '" class="btn-page current" />';
+                            } else {
+                                $per_page_html .= '<input type="submit" name="page" value="' . $i . '" class="btn-page" />';
                             }
                         }
-                        $per_page_html .= "</div>";                  
                     }
-            
-                    $query = $sql.$limit;
-                    $pdo_statement = $pdo_conn->prepare($query);
-                    $pdo_statement->bindValue(':keyword', '%' . $search_keyword . '%', PDO::PARAM_STR);
-                    $pdo_statement->execute();
-                    $result = $pdo_statement->fetchAll();
+                    $per_page_html .= "</div>";
+                }
+                
+                $query = $sql.$limit;
+                $pdo_statement = $pdo_conn->prepare($query);
+                $pdo_statement->bindValue(':keyword', '%' . $search_keyword . '%', PDO::PARAM_STR);
+                $pdo_statement->execute();
+                $result = $pdo_statement->fetchAll();
+                ?>
+                <form name='frmSearch' action='' method='post'>
+                <div style='text-align:center;margin:20px 0px;'>
+                <input type='text' name='search[keyword]' value="<?php echo $search_keyword; ?>" id='keyword'></div>
+                <table class='tbl-qa'>
+                <thead>
+                    <tr>
+                        <th class='table-header' width='20%'>Name</th>
+                        <th class='table-header' width='40%'>Email</th>
+                        <th class='table-header' width='20%'>Type</th>
+                        <th class='table-header' width='20%'>Issuebook</th>
+                        <th class='table-header' width='20%'>Days</th>
+                        <th class='table-header' width='20%'>Issuedate</th>
+                        <th class='table-header' width='20%'>Issuereturn</th>
+                    </tr>
+                </thead>
+                <tbody id='table-body'>
+                    <?php
                     if(!empty($result)) { 
                         foreach($result as $row) {
                     ?>
@@ -242,7 +240,7 @@ th{
                         <td><?php echo $row['issuedays']; ?></td>
                         <td><?php echo $row['issuedate']; ?></td>
                         <td><?php echo $row['issuereturn']; ?></td>
-                        </tr>
+                    </tr>
                     <?php
                         }
                     }
@@ -250,7 +248,8 @@ th{
                 </tbody>
                 </table>
                 <?php echo $per_page_html; ?>
-                </form>              
+                </form>
+                
                 </div>
             </div>
 
