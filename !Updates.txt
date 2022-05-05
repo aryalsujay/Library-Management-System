@@ -1,6 +1,20 @@
-Refer Gfg
+Refer https://www.geeksforgeeks.org/difference-between-bindparam-and-bindvalue-in-php/
 1. Parametrised connection - mySQL prepared statements - prepare and bind
     Reason : lala' OR '1=1 - able to login: $A=lala, $B= 1=1 so $A OR $B - since 1=1 is true so it fetches all passwords from table and logs in.
+    How? 
+    a. Using named placeholders like :em, :ps, :keyword in query.
+    b. prepare statement.
+    c. bindParam as :em,parameter
+    d. execute
+
+    Another way:
+    a. Using question mark placeholder - ? ?.
+    b. prepare statement.
+    c. bindParam as 1,parameter and 2,parameter. 
+       numbering in sequence.
+    d. execute
+
+    //bindParam exec at runtime and bindValue exec at compile-time.
 2. Pagination - add page buttons like next, prev
     Reason : If 1Lakh record then all books display at once
 3. Add Search button - be able to search using all db

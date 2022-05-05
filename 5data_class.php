@@ -16,51 +16,51 @@ session_start();
         private $date;
         private $returnDate;
 
-        function search(){
+        /*function search(){
             $search_keyword = '';
-            if(!empty($_POST['search']['keyword'])) {
-                $search_keyword = $_POST['search']['keyword'];
-            }      
-            //$sql= 'SELECT * FROM user WHERE name LIKE :keyword OR email LIKE :keyword OR type LIKE :keyword ORDER BY id DESC';
-            $sql='SELECT u.id,u.name,u.email,u.type,i.issuebook,i.issuedays,i.issuedate,i.issuereturn FROM user u INNER JOIN issuebook i ON u.id=i.userid WHERE u.name LIKE :keyword OR u.email LIKE :keyword OR u.type LIKE :keyword OR i.issuebook LIKE :keyword OR i.issuedays LIKE :keyword OR i.issuedate LIKE :keyword OR i.issuereturn LIKE :keyword ORDER BY id DESC';
+                if(!empty($_POST['search']['keyword'])) {
+                    $search_keyword = $_POST['search']['keyword'];
+                }
+                //$sql= 'SELECT * FROM user WHERE name LIKE :keyword OR email LIKE :keyword OR type LIKE :keyword ORDER BY id DESC';
+                $sql='SELECT u.id,u.name,u.email,u.type,i.issuebook,i.issuedays,i.issuedate,i.issuereturn FROM user u INNER JOIN issuebook i ON u.id=i.userid WHERE u.name LIKE :keyword OR u.email LIKE :keyword OR u.type LIKE :keyword OR i.issuebook LIKE :keyword OR i.issuedays LIKE :keyword OR i.issuedate LIKE :keyword OR i.issuereturn LIKE :keyword ORDER BY id DESC';
 
-            //Pagination Code
-            $per_page_html = '';
-            $page = 1;
-            $start=0;
-            if(!empty($_POST["page"])) {
-                $page = $_POST["page"];
-                $start=($page-1) * 2;
-            }
-            $limit=" limit " . $start . "," . 2;
-            $pagination_statement = $this->connection->prepare($sql);
-            $pagination_statement->bindValue(':keyword', '%' . $search_keyword . '%', PDO::PARAM_STR);
-            $pagination_statement->execute();
+                // Pagination Code starts
+                $per_page_html = '';
+                $page = 1;
+                $start=0;
+                if(!empty($_POST["page"])) {
+                    $page = $_POST["page"];
+                    $start=($page-1) * 2;
+                }
+                $limit=" limit " . $start . "," . 2;
+                $pagination_statement = $this->connection->prepare($sql);
+                $pagination_statement->bindValue(':keyword', '%' . $search_keyword . '%', PDO::PARAM_STR);
+                $pagination_statement->execute();
 
-            $row_count = $pagination_statement->rowCount();
-            if(!empty($row_count)){
-                $per_page_html .= "<div style='text-align:center;margin:20px 0px;'>";
-                $page_count=ceil($row_count/2);
-                if($page_count>1) {
-                    for($i=1;$i<=$page_count;$i++){
-                        if($i==$page){
-                            $per_page_html .= '<input type="submit" name="page" value="' . $i . '" class="btn-page current" />';
-                        } else {
-                            $per_page_html .= '<input type="submit" name="page" value="' . $i . '" class="btn-page" />';
+                $row_count = $pagination_statement->rowCount();
+                if(!empty($row_count)){
+                    $per_page_html .= "<div style='text-align:center;margin:20px 0px;'>";
+                    $page_count=ceil($row_count/2);
+                    if($page_count>1) {
+                        for($i=1;$i<=$page_count;$i++){
+                            if($i==$page){
+                                $per_page_html .= '<input type="submit" name="page" value="' . $i . '" class="btn-page current" />';
+                            } else {
+                                $per_page_html .= '<input type="submit" name="page" value="' . $i . '" class="btn-page" />';
+                            }
                         }
                     }
+                    $per_page_html .= "</div>";
                 }
-                $per_page_html .= "</div>";
-            }
-            
-            $query = $sql.$limit;
-            $pdo_statement = $this->connection->prepare($query);
-            $pdo_statement->bindValue(':keyword', '%' . $search_keyword . '%', PDO::PARAM_STR);
-            $pdo_statement->execute();
-            $result = $pdo_statement->fetchAll();
+                
+                $query = $sql.$limit;
+                $pdo_statement = $this->connection->prepare($query);
+                $pdo_statement->bindValue(':keyword', '%' . $search_keyword . '%', PDO::PARAM_STR);
+                $pdo_statement->execute();
+                $result = $pdo_statement->fetchAll();
             return $result;        
         }
-        
+        */
         /* function search1() {
 
             $search_keyword = '';
@@ -92,12 +92,12 @@ session_start();
             } */
 
             try{
-                $q="SELECT * FROM user where email=:em and pass=:ps";
+                $q="SELECT * FROM user where email=? and pass=?";
                 //echo $q; 
                 //exit(1);
                 $recordSet=$this->connection->prepare($q);
-                $recordSet->bindParam(':em',$t1);
-                $recordSet->bindParam(':ps',$t2);
+                $recordSet->bindParam(1,$t1);
+                $recordSet->bindParam(2,$t2);
                 $recordSet->execute();
                 $row=$recordSet->fetch(PDO::FETCH_ASSOC);
                 //$result=$recordSet->rowCount();
@@ -365,6 +365,10 @@ session_start();
                     $issuetype=$row['type'];
                 }
 
+                //Insert into log table
+                $sql="INSERT INTO log(name, issuebook, bookreturn, returncheck)VALUES('$user', '$book', '$returndate', 0)";
+                $this->connection->exec($sql);
+
                 $q="UPDATE book SET bookava='$newbookava',bookrent='$newbookrent' where id='$bookid'";
                 if($this->connection->exec($q)){
                     $q="INSERT INTO issuebook(userid, issuename, issuebook, issuetype, issuedays, issuedate, issuereturn, fine)VALUES('$issueid','$user', '$bookname', '$issuetype', '$days', '$date', '$returndate', '')";
@@ -441,16 +445,24 @@ session_start();
             $bookava="";
             $issuebook="";
             $bookrentel="";
-    
+            
             $q="SELECT * FROM issuebook where id='$id'";
             $recordSet=$this->connection->query($q);
     
             foreach($recordSet->fetchAll() as $row) {
                 //$userid=$row['userid'];
+                $username=$row['issuename'];
                 $issuebook=$row['issuebook'];
-                $fine=$row['fine'];
+                $fine=$row['fine'];  
+                $issuedbook=$row['issuebook'];              
     
-            }
+            }     
+            //INSERT into log table
+            
+            $date= date('d/m/y');
+            $sql="INSERT INTO log(name, issuebook, bookreturn, returncheck)VALUES('$username', '$issuedbook', '$date', '1')";
+            $this->connection->exec($sql);
+       
             if($fine==0){
     
             $q="SELECT * FROM book where bookname='$issuebook'";
@@ -462,7 +474,7 @@ session_start();
             }
             $q="UPDATE book SET bookava='$bookava', bookrent='$bookrentel' where bookname='$issuebook'";
             $this->connection->exec($q);
-    
+
             $q="DELETE from issuebook where id=$id and issuebook='$issuebook' and fine='0' ";
             if($this->connection->exec($q)){
         

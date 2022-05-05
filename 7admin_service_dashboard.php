@@ -177,7 +177,7 @@ th{
                 //$sql= 'SELECT * FROM user WHERE name LIKE :keyword OR email LIKE :keyword OR type LIKE :keyword ORDER BY id DESC';
                 $sql='SELECT u.id,u.name,u.email,u.type,i.issuebook,i.issuedays,i.issuedate,i.issuereturn FROM user u INNER JOIN issuebook i ON u.id=i.userid WHERE u.name LIKE :keyword OR u.email LIKE :keyword OR u.type LIKE :keyword OR i.issuebook LIKE :keyword OR i.issuedays LIKE :keyword OR i.issuedate LIKE :keyword OR i.issuereturn LIKE :keyword ORDER BY id DESC';
 
-                /* Pagination Code starts */
+                // Pagination Code starts 
                 $per_page_html = '';
                 $page = 1;
                 $start=0;
@@ -214,7 +214,8 @@ th{
                 ?>
                 <form name='frmSearch' action='' method='post'>
                 <div style='text-align:center;margin:20px 0px;'>
-                <input type='text' name='search[keyword]' value="<?php echo $search_keyword; ?>" id='keyword'></div>
+                <input type='text' name='search[keyword]' value="<?php echo $search_keyword; ?>" id='keyword'>
+                </div>
                 <table class='tbl-qa'>
                 <thead>
                     <tr>
@@ -308,7 +309,7 @@ th{
             <div class="rightinnerdiv">
                 <div id="return" class="innerright portion" style="<?php if(!empty($_REQUEST['returnid'])){ $returnid=$_REQUEST['returnid']; echo "display:none";}else{echo "display:none";} ?>">
                     <button class="greenbtn">Return</button>
-                        <?php
+                        <?php                            
                             $obj=new data;
                             $obj->setconnection();
                             $obj->returnbookad($returnid);

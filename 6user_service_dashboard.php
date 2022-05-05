@@ -2,9 +2,9 @@
     //session_start();
     $userloginid=$_GET['userlogid'];
     //$userloginid=$_SESSION["userid"] = $_GET['userlogid'];
-    //if(empty($_SESSION['userid'])){
-      //  header("Location:1index.php?msg=Login first");
-    //}
+    if(empty($_SESSION['userid'])){
+        header("Location:1index.php?msg=Invalid");
+    }
 ?>
 
 <!DOCTYPE html>
