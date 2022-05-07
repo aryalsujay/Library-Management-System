@@ -183,9 +183,9 @@ th{
                 $start=0;
                 if(!empty($_POST["page"])) {
                     $page = $_POST["page"];
-                    $start=($page-1) * 2;
+                    $start=($page-1) * 4;
                 }
-                $limit=" limit " . $start . "," . 2;
+                $limit=" limit " . $start . "," . 4;
                 $pagination_statement = $pdo_conn->prepare($sql);
                 $pagination_statement->bindValue(':keyword', '%' . $search_keyword . '%', PDO::PARAM_STR);
                 $pagination_statement->execute();
@@ -193,24 +193,26 @@ th{
                 $row_count = $pagination_statement->rowCount();
                 if(!empty($row_count)){
                     $per_page_html .= "<div style='text-align:center;margin:20px 0px;'>";
-                    $page_count=ceil($row_count/6);
-                    $k=(($page+2>$page_count)?$page_count-2:(($page-2<1)?3:$page)); 
-                        if($page>=2){
+                    $page_count=ceil($row_count/4);
+                    $k=(($page+1>$page_count)?$page_count-1:(($page-1<1)?2:$page)); 
+                    if($row_count>1){
+                        if($page>=1){
                             $per_page_html .= '<button class="btn-page current" type="submit" name="page" value="' . 1 .'"> << </button>';
-                            $per_page_html .= '<button class="btn-page" type="submit" name="page" value="' . $page-1 .'"> Prev </button>';                            
+                            $per_page_html .= '<button class="btn-page" type="submit" name="page" value="' . ($page-1) .'"> Prev </button>';                            
                         }
-                        for($i=-2;$i<=2;$i++){
+                        for($i=-1;$i<=1;$i++){
                             if($k+$i==$page){
-                                $per_page_html .= '<input type="submit" name="page" value="' . $k+$i . '" class="btn-page current" />';
+                                $per_page_html .= '<input type="submit" name="page" value="' . ($k+$i) . '" class="btn-page current" />';
                             } else {
-                                $per_page_html .= '<input type="submit" name="page" value="' . $k+$i . '" class="btn-page" />';
+                                $per_page_html .= '<input type="submit" name="page" value="' . ($k+$i) . '" class="btn-page" />';
                             }
-                        } 
+                        }
                         if($page<$page_count){
-                            $per_page_html .= '<button class="btn-page" type="submit" name="page" value="' . $page+1 .'"> Next </button>'; 
+                            $per_page_html .= '<button class="btn-page" type="submit" name="page" value="' . ($page+1) .'"> Next </button>'; 
                             $per_page_html .= '<button class="btn-page current" type="submit" name="page" value="' . $page_count .'"> >> </button>';
                             
-                        }                   
+                        }   
+                    }             
                     $per_page_html .= "</div>";
                 }
                 
