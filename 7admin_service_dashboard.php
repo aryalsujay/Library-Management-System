@@ -193,16 +193,24 @@ th{
                 $row_count = $pagination_statement->rowCount();
                 if(!empty($row_count)){
                     $per_page_html .= "<div style='text-align:center;margin:20px 0px;'>";
-                    $page_count=ceil($row_count/2);
-                    if($page_count>1) {
-                        for($i=1;$i<=$page_count;$i++){
-                            if($i==$page){
-                                $per_page_html .= '<input type="submit" name="page" value="' . $i . '" class="btn-page current" />';
-                            } else {
-                                $per_page_html .= '<input type="submit" name="page" value="' . $i . '" class="btn-page" />';
-                            }
+                    $page_count=ceil($row_count/6);
+                    $k=(($page+2>$page_count)?$page_count-2:(($page-2<1)?3:$page)); 
+                        if($page>=2){
+                            $per_page_html .= '<button class="btn-page current" type="submit" name="page" value="' . 1 .'"> << </button>';
+                            $per_page_html .= '<button class="btn-page" type="submit" name="page" value="' . $page-1 .'"> Prev </button>';                            
                         }
-                    }
+                        for($i=-2;$i<=2;$i++){
+                            if($k+$i==$page){
+                                $per_page_html .= '<input type="submit" name="page" value="' . $k+$i . '" class="btn-page current" />';
+                            } else {
+                                $per_page_html .= '<input type="submit" name="page" value="' . $k+$i . '" class="btn-page" />';
+                            }
+                        } 
+                        if($page<$page_count){
+                            $per_page_html .= '<button class="btn-page" type="submit" name="page" value="' . $page+1 .'"> Next </button>'; 
+                            $per_page_html .= '<button class="btn-page current" type="submit" name="page" value="' . $page_count .'"> >> </button>';
+                            
+                        }                   
                     $per_page_html .= "</div>";
                 }
                 
