@@ -366,7 +366,7 @@ session_start();
                 }
 
                 //Insert into log table
-                $sql="INSERT INTO log(name, issuebook, bookreturn, returncheck)VALUES('$user', '$book', '$returndate', 0)";
+                $sql="INSERT INTO log(userid,name, issuebook, bookreturn, returncheck)VALUES('$issueid','$user', '$book', '$returndate', 0)";
                 $this->connection->exec($sql);
 
                 $q="UPDATE book SET bookava='$newbookava',bookrent='$newbookrent' where id='$bookid'";
@@ -450,7 +450,7 @@ session_start();
             $recordSet=$this->connection->query($q);
     
             foreach($recordSet->fetchAll() as $row) {
-                //$userid=$row['userid'];
+                $userid=$row['userid'];
                 $username=$row['issuename'];
                 $issuebook=$row['issuebook'];
                 $fine=$row['fine'];  
@@ -460,7 +460,7 @@ session_start();
             //INSERT into log table
             
             $date= date('d/m/y');
-            $sql="INSERT INTO log(name, issuebook, bookreturn, returncheck)VALUES('$username', '$issuedbook', '$date', '1')";
+            $sql="INSERT INTO log(userid,name, issuebook, bookreturn, returncheck)VALUES('$userid','$username', '$issuedbook', '$date', '1')";
             $this->connection->exec($sql);
        
             if($fine==0){

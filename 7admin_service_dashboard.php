@@ -111,7 +111,9 @@ th{
 #keyword{border: #CCC 1px solid; border-radius: 4px; padding: 7px;background:url("demo-search-icon.png") no-repeat center right 7px;}
 .btn-page{margin-right:10px;padding:5px 10px; border: #CCC 1px solid; background:#FFF; border-radius:4px;cursor:pointer;}
 .btn-page:hover{background:#F0F0F0;}
-.btn-page.current{background:#F0F0F0;}
+.btn-page.current{background:#0096FF;}
+.btn-page.woof{background: #B6D0E2;}
+.btn-page.yo{background: #6495ED;}
 </style>
 <body>
     
@@ -183,8 +185,10 @@ th{
                 $start=0;
                 if(!empty($_POST["page"])) {
                     $page = $_POST["page"];
+                    //no. of rows in one page
                     $start=($page-1) * 4;
                 }
+                //limit to fetch rows
                 $limit=" limit " . $start . "," . 4;
                 $pagination_statement = $pdo_conn->prepare($sql);
                 $pagination_statement->bindValue(':keyword', '%' . $search_keyword . '%', PDO::PARAM_STR);
@@ -194,11 +198,12 @@ th{
                 if(!empty($row_count)){
                     $per_page_html .= "<div style='text-align:center;margin:20px 0px;'>";
                     $page_count=ceil($row_count/4);
+                    //k is middle index
                     $k=(($page+1>$page_count)?$page_count-1:(($page-1<1)?2:$page)); 
                     if($row_count>1){
                         if($page>=1){
-                            $per_page_html .= '<button class="btn-page current" type="submit" name="page" value="' . 1 .'"> << </button>';
-                            $per_page_html .= '<button class="btn-page" type="submit" name="page" value="' . ($page-1) .'"> Prev </button>';                            
+                            $per_page_html .= '<button class="btn-page woof" type="submit" name="page" value="' . 1 .'"> << </button>';
+                            $per_page_html .= '<button class="btn-page yo" type="submit" name="page" value="' . ($page-1) .'"> Prev </button>';                            
                         }
                         for($i=-1;$i<=1;$i++){
                             if($k+$i==$page){
@@ -208,14 +213,14 @@ th{
                             }
                         }
                         if($page<$page_count){
-                            $per_page_html .= '<button class="btn-page" type="submit" name="page" value="' . ($page+1) .'"> Next </button>'; 
-                            $per_page_html .= '<button class="btn-page current" type="submit" name="page" value="' . $page_count .'"> >> </button>';
+                            $per_page_html .= '<button class="btn-page yo" type="submit" name="page" value="' . ($page+1) .'"> Next </button>'; 
+                            $per_page_html .= '<button class="btn-page woof" type="submit" name="page" value="' . $page_count .'"> >> </button>';
                             
                         }   
                     }             
                     $per_page_html .= "</div>";
                 }
-                
+                //fetch in limit and according to page defined
                 $query = $sql.$limit;
                 $pdo_statement = $pdo_conn->prepare($query);
                 $pdo_statement->bindValue(':keyword', '%' . $search_keyword . '%', PDO::PARAM_STR);
@@ -294,7 +299,7 @@ th{
                         $u->setconnection();
                         $u->issuereport();
                         $recordset=$u->issuereport();
-
+                    
                         $table="<table style='font-family: Arial, Helvetica, sans-serif;border-collapse: collapse;width: 100%;'><tr><th style='  border: 1px solid #ddd;
             padding: 8px;'>Issue Name</th><th>Book Name</th><th>Issue Date</th><th>Return Date</th><th>Fine</th></th><th>Issue Type</th><th>Return</th></tr>";
                         

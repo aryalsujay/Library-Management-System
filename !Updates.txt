@@ -19,3 +19,9 @@ Refer https://www.geeksforgeeks.org/difference-between-bindparam-and-bindvalue-i
     Reason : If 1Lakh record then all books display at once
 3. Add Search button - be able to search using all db
     Reason : To browse, join all db's
+
+8th May 2022
+4. Color change for current page.
+Next and Prev button disable when in first or last page.
+
+5. Log - userid, bookid, returndate, returncheck.
