@@ -7,4 +7,5 @@
     $obj= new data();
     $obj->setconnection();
     $obj->bookissue($book,$user,$date,$days,$returndate);
+    //$obj->booklog($book,$user,$returndate);
 ?>

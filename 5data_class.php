@@ -292,7 +292,7 @@ session_start();
 
         } 
         function issuereport(){
-            $q="SELECT * FROM issuebook";
+            $q="SELECT * FROM issuebook ORDER BY id DESC";
             $data=$this->connection->query($q);
             return $data;
         }
@@ -331,17 +331,56 @@ session_start();
             return $data;
             
         }
+        function getbook(){
+            $q="SELECT * FROM book";
+            $data=$this->connection->query($q);
+            return $data;
+        }
+        function getbookid($id){
+            $q="SELECT * FROM book WHERE id='$id'";
+            $data=$this->connection->query($q);
+            return $data;
+        }
+        function booklog($issuebook){
+            $this->issuebook=$issuebook;
+            
+            $sql="SELECT i.userid,i.issuename,i.issuetype,i.issuedate,i.issuereturn FROM issuebook i UNION SELECT l.returncheck FROM log l WHERE issuebook='$issuebook'";
+            $data=$this->connection->query($sql);
+            return $data;
+            
+        }
         function getbookissue(){
             $q="SELECT * FROM book where bookava !=0";
             $data=$this->connection->query($q);
             return $data;
         }
+        
         function bookissue($book,$user,$date,$days,$returndate){
             $this->book=$book;
             $this->user=$user;
             $this->date=$date;
             $this->days=$days;
             $this->returnDate=$returndate;
+
+            //Insert into log table
+            $q="SELECT * FROM book where bookname='$book'";
+            $bookres=$this->connection->query($q);
+
+            foreach($bookres->fetchAll() as $row){
+                $bookid=$row['id'];
+            }
+
+            $q="SELECT * FROM user where name='$user'";
+            $userres=$this->connection->query($q);
+
+            foreach($userres->fetchAll() as $row){
+                $issueid=$row['id'];
+            }
+
+            $sql="INSERT INTO log(userid, bookid, issuebook, bookreturn, returncheck)VALUES('$issueid','$bookid', '$book', '$returndate', '0')";
+            $this->connection->exec($sql);
+
+            //bookissue start
 
             $q="SELECT * FROM book where bookname='$book'";
             $recordSet=$this->connection->query($q);
@@ -365,10 +404,7 @@ session_start();
                     $issuetype=$row['type'];
                 }
 
-                //Insert into log table
-                $sql="INSERT INTO log(userid,name, issuebook, bookreturn, returncheck)VALUES('$issueid','$user', '$book', '$returndate', 0)";
-                $this->connection->exec($sql);
-
+                
                 $q="UPDATE book SET bookava='$newbookava',bookrent='$newbookrent' where id='$bookid'";
                 if($this->connection->exec($q)){
                     $q="INSERT INTO issuebook(userid, issuename, issuebook, issuetype, issuedays, issuedate, issuereturn, fine)VALUES('$issueid','$user', '$bookname', '$issuetype', '$days', '$date', '$returndate', '')";
@@ -441,28 +477,52 @@ session_start();
         }
 
         function returnbookad($id){
+
+            
+
+            //returnbook
+            
             $fine="";
             $bookava="";
             $issuebook="";
             $bookrentel="";
+            $ibook="";
+            $bid="";
+            $uid="";
             
+            //INSERT into log table
+            $rdate=date('d/m/y');
+            $q="SELECT * FROM issuebook where id='$id'";
+            $ibookres=$this->connection->query($q);
+
+            foreach($ibookres->fetchAll() as $row){
+                $ibook=$row['issuebook'];
+                $uid=$row['userid'];
+            }
+
+            $q="SELECT * FROM book where bookname='$ibook'";
+            $bookres=$this->connection->query($q);
+
+            foreach($bookres->fetchAll() as $row){
+                $bid=$row['id'];
+            }
+            
+            $db="INSERT INTO log(userid, bookid, issuebook, bookreturn, returncheck)VALUES('$uid','$bid', '$ibook', '$rdate', '1')";
+            $this->connection->exec($db);
+             
+            //log close
+
             $q="SELECT * FROM issuebook where id='$id'";
             $recordSet=$this->connection->query($q);
     
             foreach($recordSet->fetchAll() as $row) {
-                $userid=$row['userid'];
-                $username=$row['issuename'];
+                
                 $issuebook=$row['issuebook'];
                 $fine=$row['fine'];  
-                $issuedbook=$row['issuebook'];              
+                            
     
             }     
-            //INSERT into log table
-            
-            $date= date('d/m/y');
-            $sql="INSERT INTO log(userid,name, issuebook, bookreturn, returncheck)VALUES('$userid','$username', '$issuedbook', '$date', '1')";
-            $this->connection->exec($sql);
-       
+
             if($fine==0){
     
             $q="SELECT * FROM book where bookname='$issuebook'";
