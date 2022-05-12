@@ -130,7 +130,6 @@ th{
             <div class="row"><a href="7admin_service_dashboard.php"><img class="imglogo" src="images/logo.png"></a></div>
             <div class="leftinnerdiv">
                 <Button class="greenbtn" onclick="openpart('search')">Search</Button>
-                <Button class="greenbtn" onclick="openpart('booklog')">Book Log</Button>
                 <Button class="greenbtn" onclick="openpart('addbook')">Add book</Button>
                 <Button class="greenbtn" onclick="openpart('bookreport')">Book Report</Button>
                 <Button class="greenbtn" onclick="openpart('bookrequestapprove')">Book Request</Button>
@@ -167,77 +166,9 @@ th{
                     </form>
                 </div>
             </div>
-
-            <div class="rightinnerdiv">                
-                <div id="booklog" class="innerright portion" style="display:none">               
-                <Button class="greenbtn">Book Log</Button>
-                
-                <?php 
-                    $id="";
-                    $id=$_POST['id'];
-                    $sql="SELECT i.userid,i.issuename,i.issuetype,i.issuedate,i.issuereturn FROM issuebook i UNION SELECT l.returncheck FROM log l WHERE issuebook='$issuebook'";
-                    $data=$pdo_conn->query($sql); 
-                ?>
-                    <label for="ibook">Choose Book: </label>
-                    <select name="issuebook">
-                        <?php
-                            $obj= new data();
-                            $obj->setconnection();
-                            $obj->getbook();
-                            $recordset=$obj->getbook();
-                            foreach($recordset as $row){
-                                echo "<option value ='" . $row[2] . "'>" . $row[2] . "</option>";
-                                
-                            }
-                        ?>   
-                    <input type="submit" class="btn-primary" name="Submit" value="Submit"/>$id=$row[2];
-                    <br>
-                    <br>
-                    <table class='tbl-qa'>
-                <thead>
-                    <tr>
-                        <th class='table-header' width='20%'>Issued By</th>                        
-                        <th class='table-header' width='20%'>Type</th>
-                        <th class='table-header' width='20%'>Issuedate</th>                                                
-                        <th class='table-header' width='20%'>ReturnOn</th>
-                        <th class='table-header' width='20%'>Returned</th>
-                    </tr>
-                </thead>
-                <?php require_once "4.1db.php";
-                    $issuebook="";
-                    $obj=new data();
-                    $obj->setconnection();
-                    $obj->getbookid($id);
-                    $recordset=$obj->getbookid($id);
-                    foreach($recordset as $row){
-                        $issuebook=$row[2];
-                    }
-                     /*
-                    $obj->booklog($issuebook);
-                    $data=$obj->booklog($issuebook); */
-                                      
-                   
-                        foreach($data->fetchAll() as $row) {
-                    ?>
-                    <tr class='table-row'>
-                        <td><?php echo $row['issuename']; ?></td>
-                        <td><?php echo $row['issuetype']; ?></td>
-                        <td><?php echo $row['issuedate']; ?></td>
-                        <td><?php echo $row['issuereturn']; ?></td>
-                        <td><?php echo $row['returncheck']; ?></td>
-                        </tr>
-                    <?php
-                        }
-                    
-                    ?>
-                </tbody>
-                </table>
-
-                </div>
-            </div>
             
             <div class="rightinnerdiv"> 
-                <div id="search" class="innerright portion" style="<?php if(!empty($_REQUEST['viewid'])){echo "display:none";}else{echo "";} ?>">               
+                <div id="search" class="innerright portion" style="<?php if(!empty($_REQUEST['viewid'])){echo "display:none";}elseif(!empty($_REQUEST['lid'])){echo "display:none";}else{echo "";} ?>">               
                 <Button class="greenbtn">Search</Button>
                 
                 <?php require_once('4.1db.php');
@@ -441,7 +372,7 @@ th{
                         $u->bookrecord();
                         $recordset=$u->bookrecord();
                         $table="<table style='font-family: Arial, Helvetica, sans-serif;border-collapse: collapse;width: 100%;'><tr><th style='  border: 1px solid #ddd;
-                        padding: 8px;'>Book Name</th><th>Price</th><th>Qty</th><th>Available</th><th>Rent</th></th><th>View</th><th>Delete</th></tr>";
+                        padding: 8px;'>Book Name</th><th>Price</th><th>Qty</th><th>Available</th><th>Rent</th></th><th>View</th><th>Delete</th><th>Log</th></tr>";
 
                         foreach($recordset as $row){
                             $table.="<tr>";
@@ -453,11 +384,55 @@ th{
                             $table.="<td>$row[10]</td>";
                             $table.="<td><button type='button' class='btn btn-primary' style='font-family: Arial;padding 10px;'><a href='7admin_service_dashboard.php?viewid=$row[0]'>View Book</button></a></td>";
                             $table.="<td><button type='button' class='btn btn-primary'><a href=14deletebook.php?deletebook=$row[0]>DELETE</a></button></td>";
+                            $table.="<td><button type='button' class='btn btn-primary'><a href='7admin_service_dashboard.php?lid=$row[0]'>LOG</a></button></td>";
                             $table.="</tr>";
                         }
                         $table.="</table>";
                         echo $table;
                     ?>
+                </div>
+            </div>
+
+            <div class="rightinnerdiv">
+                <div id="booklog" class="innerright portion" style="<?php if(!empty($_REQUEST['lid'])){$lid=$_REQUEST['lid'];}else{echo "display:none";}?>">
+                    <button class="greenbtn">Book Log</button>
+                    <?php
+                        $obj=new data();
+                        $obj->setconnection();
+                        $obj->booklog($lid);
+                        $result=$obj->booklog($lid);
+                    ?>
+                    <table class='tbl-qa'>
+                        <thead>
+                            <tr>
+                                <th class='table-header' width='20%'>Issued By</th>                                
+                                <th class='table-header' width='20%'>Type</th>
+                                <th class='table-header' width='20%'>Days</th>
+                                <th class='table-header' width='20%'>Issuedate</th>
+                                <th class='table-header' width='20%'>Issuereturn</th>
+                                <th class='table-header' width='20%'>Return Check</th>                            
+                            </tr>
+                        </thead>
+                        <tbody id='table-body'>
+                            <?php
+                            if(!empty($result)) { 
+                                foreach($result as $row) {
+                            ?>
+                            <tr class='table-row'>
+                                <td><?php echo $row['issuename']; ?></td>
+                                <td><?php echo $row['issuetype']; ?></td>
+                                <td><?php echo $row['issuedays']; ?></td>
+                                <td><?php echo $row['issuedate']; ?></td>
+                                <td><?php echo $row['issuereturn']; ?></td>
+                                <td><?php echo $row['returncheck']; ?></td>                            
+                            </tr>
+                            <?php
+                                }
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                    
                 </div>
             </div>
 

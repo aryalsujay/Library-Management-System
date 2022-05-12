@@ -336,15 +336,16 @@ session_start();
             $data=$this->connection->query($q);
             return $data;
         }
-        function getbookid($id){
-            $q="SELECT * FROM book WHERE id='$id'";
-            $data=$this->connection->query($q);
-            return $data;
-        }
-        function booklog($issuebook){
-            $this->issuebook=$issuebook;
+        function booklog($lid){
+            $bname="";
             
-            $sql="SELECT i.userid,i.issuename,i.issuetype,i.issuedate,i.issuereturn FROM issuebook i UNION SELECT l.returncheck FROM log l WHERE issuebook='$issuebook'";
+            $q="SELECT * FROM book WHERE id='$lid'";
+            $res=$this->connection->query($q);
+            foreach($res->fetchAll() as $row){
+                $bname=$row['bookname'];
+            }
+            
+            $sql="SELECT l.bookid,i.issuename,i.issuetype,i.issuedays,i.issuedate,i.issuereturn,l.returncheck FROM issuebook i RIGHT JOIN log l ON l.bookid=i.bookid AND l.userid WHERE l.issuebook='$bname'";
             $data=$this->connection->query($sql);
             return $data;
             
@@ -366,19 +367,20 @@ session_start();
             $q="SELECT * FROM book where bookname='$book'";
             $bookres=$this->connection->query($q);
 
+            $q="SELECT * FROM user where name='$user'";
+            $userres=$this->connection->query($q);
+            $res=$userres->rowCount();
+
+            if($res > 0){
             foreach($bookres->fetchAll() as $row){
                 $bookid=$row['id'];
             }
-
-            $q="SELECT * FROM user where name='$user'";
-            $userres=$this->connection->query($q);
-
             foreach($userres->fetchAll() as $row){
                 $issueid=$row['id'];
             }
-
             $sql="INSERT INTO log(userid, bookid, issuebook, bookreturn, returncheck)VALUES('$issueid','$bookid', '$book', '$returndate', '0')";
             $this->connection->exec($sql);
+            }
 
             //bookissue start
 
@@ -407,7 +409,7 @@ session_start();
                 
                 $q="UPDATE book SET bookava='$newbookava',bookrent='$newbookrent' where id='$bookid'";
                 if($this->connection->exec($q)){
-                    $q="INSERT INTO issuebook(userid, issuename, issuebook, issuetype, issuedays, issuedate, issuereturn, fine)VALUES('$issueid','$user', '$bookname', '$issuetype', '$days', '$date', '$returndate', '')";
+                    $q="INSERT INTO issuebook(userid, bookid, issuename, issuebook, issuetype, issuedays, issuedate, issuereturn, fine)VALUES('$issueid','$bookid','$user', '$bookname', '$issuetype', '$days', '$date', '$returndate', '')";
                     if($this->connection->exec($q)){
                         header("Location:7admin_service_dashboard.php?msg=done");
                     }else{
@@ -494,21 +496,23 @@ session_start();
             $rdate=date('d/m/y');
             $q="SELECT * FROM issuebook where id='$id'";
             $ibookres=$this->connection->query($q);
+            $rs=$ibookres->rowCount();
 
+            $q="SELECT * FROM book where bookname='$ibook'";
+            $bookres=$this->connection->query($q);
+            
+            if($rs > 0){
             foreach($ibookres->fetchAll() as $row){
                 $ibook=$row['issuebook'];
                 $uid=$row['userid'];
             }
-
-            $q="SELECT * FROM book where bookname='$ibook'";
-            $bookres=$this->connection->query($q);
-
             foreach($bookres->fetchAll() as $row){
                 $bid=$row['id'];
             }
             
             $db="INSERT INTO log(userid, bookid, issuebook, bookreturn, returncheck)VALUES('$uid','$bid', '$ibook', '$rdate', '1')";
             $this->connection->exec($db);
+        }
              
             //log close
 
