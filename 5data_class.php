@@ -358,23 +358,11 @@ session_start();
         }    
         
         function booklog($lid){
-            $uid="";
-            $rcheck="";
-            $type="";
-            $idate="";
-            $ireturn="";
-
-            $q="SELECT * FROM log WHERE bookid='$lid'";
+            $q="SELECT * FROM log AS l INNER JOIN user AS u ON l.userid=u.id WHERE bookid='$lid'";
             $lg=$this->connection->query($q); 
-            
-            foreach($lg->fetchAll() as $row){
-                $uid=$row['userid'];
-            }
-            
-            $sql="SELECT u.id,u.name,u.type,b.id,l.bookid,l.userid,l.bookreturn,l.returncheck FROM log l INNER JOIN user u ON u.id=l.userid INNER JOIN book b WHERE l.userid='$uid' AND l.bookid='$lid'";
-            $lg=$this->connection->query($sql); 
             return $lg;
-
+            //$sql="SELECT u.id,u.name,u.type,b.id,l.bookid,l.userid,l.bookreturn,l.returncheck FROM log l INNER JOIN user u ON u.id=l.userid INNER JOIN book b WHERE l.userid='$uid' AND l.bookid='$lid'";
+            //$lg=$this->connection->query($sql); 
             /*$q="SELECT * FROM log WHERE bookid='$lid'";
             $lg=$this->connection->query($q); 
                      
@@ -435,7 +423,7 @@ session_start();
             foreach($userres->fetchAll() as $row){
                 $issueid=$row['id'];
             }
-            $sql="INSERT INTO log(userid, bookid, issuebook, bookreturn, returncheck)VALUES('$issueid','$bookid', '$book', '$returndate', '0')";
+            $sql="INSERT INTO log(userid, bookid, issuebook, bookissue, bookreturn, returncheck)VALUES('$issueid','$bookid', '$book', '$date', '$returndate', '0')";
             $this->connection->exec($sql);
             }
 
@@ -548,6 +536,7 @@ session_start();
             $ibook="";
             $bid="";
             $uid="";
+            $idate="";
             
             //INSERT into log table
             $rdate=date('d/m/y');
@@ -560,10 +549,11 @@ session_start();
                 $ibook=$row['issuebook'];
                 $uid=$row['userid'];
                 $bid=$row['bookid'];
+                $idate=$row['issuedate'];
             }
            
             
-            $db="INSERT INTO log(userid, bookid, issuebook, bookreturn, returncheck)VALUES('$uid','$bid', '$ibook', '$rdate', '1')";
+            $db="INSERT INTO log(userid, bookid, issuebook, bookissue, bookreturn, returncheck)VALUES('$uid','$bid', '$ibook', '$idate','$rdate', '1')";
             $this->connection->exec($db);
         }
              

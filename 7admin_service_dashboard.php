@@ -436,7 +436,7 @@ th{
                             <tr class='table-row'>
                             <td><?php echo $row['name'];?></td>
                             <td><?php echo $row['type'];?></td>
-                            <td><?php echo $row['bookreturn'];?></td>
+                            <td><?php echo $row['bookissue'];?></td>
                             <td><?php echo $row['bookreturn'];?></td>
                             <td><?php echo $row['returncheck'];?></td>                          
                             </tr>

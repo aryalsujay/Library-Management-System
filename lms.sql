@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 13, 2022 at 04:32 AM
+-- Generation Time: May 13, 2022 at 09:48 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -65,10 +65,10 @@ CREATE TABLE `book` (
 --
 
 INSERT INTO `book` (`id`, `bookpic`, `bookname`, `bookdetail`, `bookauthor`, `bookpub`, `branch`, `bookprice`, `bookquantity`, `bookava`, `bookrent`) VALUES
-(6, 'arrow.jpg', 'Art Of Living', 'Dhamma', 'VRI', 'VRI', 'Other', '50', '100', 100, 0),
-(8, 'arrow.png', 'Harry Potter', 'Magical', 'JK Rowling', 'Oxford', 'Other', '400', '100', 100, 0),
+(6, 'arrow.jpg', 'Art Of Living', 'Dhamma', 'VRI', 'VRI', 'Other', '50', '100', 98, 2),
+(8, 'arrow.png', 'Harry Potter', 'Magical', 'JK Rowling', 'Oxford', 'Other', '400', '100', 99, 1),
 (9, 'arrow.jpg', 'Chronicles of Buddha', 'Stories', 'VRI', 'VRI', 'Other', '100', '50', 48, 2),
-(10, 'Screenshot 2021-06-22 221', 'Ikigai', 'Goal', 'Wan San', 'Watasiwa', 'Other', '500', '500', 499, 1),
+(10, 'Screenshot 2021-06-22 221', 'Ikigai', 'Goal', 'Wan San', 'Watasiwa', 'Other', '500', '500', 500, 0),
 (11, 'logo.png', 'Parami', 'Perfections', 'Bhikkhu Bodhi', 'BPS', 'Other', '200', '300', 300, 0);
 
 -- --------------------------------------------------------
@@ -95,9 +95,11 @@ CREATE TABLE `issuebook` (
 --
 
 INSERT INTO `issuebook` (`id`, `userid`, `bookid`, `issuename`, `issuebook`, `issuetype`, `issuedays`, `issuedate`, `issuereturn`, `fine`) VALUES
-(93, 1, 9, 'Sujay', 'Chronicles of Buddha', 'Student', 40, '12/05/22', '21/06/22', 0),
-(94, 1, 10, 'Sujay', 'Ikigai', 'Student', 89, '12/05/22', '09/08/22', 0),
-(96, 8, 9, 'tulika', 'Chronicles of Buddha', 'Student', 40, '12/05/22', '21/06/22', 0);
+(98, 2, 6, 'amar', 'Art Of Living', 'Student', 76, '13/05/22', '28/07/22', 0),
+(99, 1, 8, 'Sujay', 'Harry Potter', 'Student', 76, '13/05/22', '28/07/22', 0),
+(100, 8, 6, 'tulika', 'Art Of Living', 'Student', 65, '13/05/22', '17/07/22', 0),
+(101, 1, 9, 'Sujay', 'Chronicles of Buddha', 'Student', 55, '13/05/22', '07/07/22', 0),
+(102, 8, 9, 'tulika', 'Chronicles of Buddha', 'Student', 56, '13/05/22', '08/07/22', 0);
 
 -- --------------------------------------------------------
 
@@ -109,6 +111,7 @@ CREATE TABLE `log` (
   `id` int(11) NOT NULL,
   `userid` int(11) NOT NULL,
   `bookid` int(11) NOT NULL,
+  `bookissue` varchar(11) NOT NULL,
   `issuebook` varchar(25) NOT NULL,
   `bookreturn` varchar(11) NOT NULL,
   `returncheck` int(11) NOT NULL
@@ -118,14 +121,16 @@ CREATE TABLE `log` (
 -- Dumping data for table `log`
 --
 
-INSERT INTO `log` (`id`, `userid`, `bookid`, `issuebook`, `bookreturn`, `returncheck`) VALUES
-(494, 1, 6, 'Art Of Living', '01/07/22', 0),
-(495, 1, 6, 'Art Of Living', '12/05/22', 1),
-(496, 1, 9, 'Chronicles of Buddha', '21/06/22', 0),
-(497, 1, 10, 'Ikigai', '09/08/22', 0),
-(498, 8, 6, 'Art Of Living', '01/07/22', 0),
-(499, 8, 6, 'Art Of Living', '12/05/22', 1),
-(500, 8, 9, 'Chronicles of Buddha', '21/06/22', 0);
+INSERT INTO `log` (`id`, `userid`, `bookid`, `bookissue`, `issuebook`, `bookreturn`, `returncheck`) VALUES
+(504, 1, 6, '13/05/22', 'Art Of Living', '10/08/22', 0),
+(505, 2, 6, '13/05/22', 'Art Of Living', '28/07/22', 0),
+(506, 1, 8, '13/05/22', 'Harry Potter', '28/07/22', 0),
+(507, 8, 6, '13/05/22', 'Art Of Living', '17/07/22', 0),
+(508, 1, 6, '13/05/22', 'Art Of Living', '13/05/22', 1),
+(509, 1, 9, '13/05/22', 'Chronicles of Buddha', '07/07/22', 0),
+(510, 8, 9, '13/05/22', 'Chronicles of Buddha', '08/07/22', 0),
+(511, 10, 9, '13/05/22', 'Chronicles of Buddha', '07/06/22', 0),
+(512, 10, 9, '13/05/22', 'Chronicles of Buddha', '13/05/22', 1);
 
 -- --------------------------------------------------------
 
@@ -239,13 +244,13 @@ ALTER TABLE `book`
 -- AUTO_INCREMENT for table `issuebook`
 --
 ALTER TABLE `issuebook`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=104;
 
 --
 -- AUTO_INCREMENT for table `log`
 --
 ALTER TABLE `log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=501;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=513;
 
 --
 -- AUTO_INCREMENT for table `requestbook`
