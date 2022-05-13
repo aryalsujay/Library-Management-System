@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 12, 2022 at 05:57 AM
+-- Generation Time: May 13, 2022 at 04:32 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -67,8 +67,8 @@ CREATE TABLE `book` (
 INSERT INTO `book` (`id`, `bookpic`, `bookname`, `bookdetail`, `bookauthor`, `bookpub`, `branch`, `bookprice`, `bookquantity`, `bookava`, `bookrent`) VALUES
 (6, 'arrow.jpg', 'Art Of Living', 'Dhamma', 'VRI', 'VRI', 'Other', '50', '100', 100, 0),
 (8, 'arrow.png', 'Harry Potter', 'Magical', 'JK Rowling', 'Oxford', 'Other', '400', '100', 100, 0),
-(9, 'arrow.jpg', 'Chronicles of Buddha', 'Stories', 'VRI', 'VRI', 'Other', '100', '50', 50, 0),
-(10, 'Screenshot 2021-06-22 221', 'Ikigai', 'Goal', 'Wan San', 'Watasiwa', 'Other', '500', '500', 500, 0),
+(9, 'arrow.jpg', 'Chronicles of Buddha', 'Stories', 'VRI', 'VRI', 'Other', '100', '50', 48, 2),
+(10, 'Screenshot 2021-06-22 221', 'Ikigai', 'Goal', 'Wan San', 'Watasiwa', 'Other', '500', '500', 499, 1),
 (11, 'logo.png', 'Parami', 'Perfections', 'Bhikkhu Bodhi', 'BPS', 'Other', '200', '300', 300, 0);
 
 -- --------------------------------------------------------
@@ -90,6 +90,15 @@ CREATE TABLE `issuebook` (
   `fine` int(25) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `issuebook`
+--
+
+INSERT INTO `issuebook` (`id`, `userid`, `bookid`, `issuename`, `issuebook`, `issuetype`, `issuedays`, `issuedate`, `issuereturn`, `fine`) VALUES
+(93, 1, 9, 'Sujay', 'Chronicles of Buddha', 'Student', 40, '12/05/22', '21/06/22', 0),
+(94, 1, 10, 'Sujay', 'Ikigai', 'Student', 89, '12/05/22', '09/08/22', 0),
+(96, 8, 9, 'tulika', 'Chronicles of Buddha', 'Student', 40, '12/05/22', '21/06/22', 0);
+
 -- --------------------------------------------------------
 
 --
@@ -110,16 +119,13 @@ CREATE TABLE `log` (
 --
 
 INSERT INTO `log` (`id`, `userid`, `bookid`, `issuebook`, `bookreturn`, `returncheck`) VALUES
-(474, 1, 6, 'Art Of Living', '10/08/22', 0),
-(475, 2, 6, 'Art Of Living', '31/07/22', 0),
-(476, 9, 6, 'Art Of Living', '09/08/22', 0),
-(477, 11, 6, 'Art Of Living', '30/07/22', 0),
-(478, 1, 9, 'Chronicles of Buddha', '07/07/22', 0),
-(479, 1, 0, 'Chronicles of Buddha', '12/05/22', 1),
-(480, 9, 0, 'Art Of Living', '12/05/22', 1),
-(481, 11, 0, 'Art Of Living', '12/05/22', 1),
-(482, 2, 0, 'Art Of Living', '12/05/22', 1),
-(483, 1, 0, 'Art Of Living', '12/05/22', 1);
+(494, 1, 6, 'Art Of Living', '01/07/22', 0),
+(495, 1, 6, 'Art Of Living', '12/05/22', 1),
+(496, 1, 9, 'Chronicles of Buddha', '21/06/22', 0),
+(497, 1, 10, 'Ikigai', '09/08/22', 0),
+(498, 8, 6, 'Art Of Living', '01/07/22', 0),
+(499, 8, 6, 'Art Of Living', '12/05/22', 1),
+(500, 8, 9, 'Chronicles of Buddha', '21/06/22', 0);
 
 -- --------------------------------------------------------
 
@@ -233,13 +239,13 @@ ALTER TABLE `book`
 -- AUTO_INCREMENT for table `issuebook`
 --
 ALTER TABLE `issuebook`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
 
 --
 -- AUTO_INCREMENT for table `log`
 --
 ALTER TABLE `log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=484;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=501;
 
 --
 -- AUTO_INCREMENT for table `requestbook`
