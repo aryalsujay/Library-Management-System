@@ -336,9 +336,65 @@ session_start();
             $data=$this->connection->query($q);
             return $data;
         }
+        function userlog($lid){
+            $uid="";
+            $rcheck="";
+            $type="";
+            $idate="";
+            $ireturn="";
+            $q="SELECT * FROM log WHERE bookid='$lid'";
+            $lg=$this->connection->query($q); 
+            foreach($lg->fetchAll() as $row){
+                $uid=$row['userid'];
+            } 
+            $q="SELECT * FROM user WHERE id='$uid'";
+            $ur=$this->connection->query($q);
+            foreach($ur->fetchAll() as $row){
+                $uname=$row['name'];
+                $type=$row['type'];
+            }
+            return [$uname,$type];
+            //return $ur;
+        }    
+        
         function booklog($lid){
-            $bname="";
+            $uid="";
+            $rcheck="";
+            $type="";
+            $idate="";
+            $ireturn="";
+
+            $q="SELECT * FROM log WHERE bookid='$lid'";
+            $lg=$this->connection->query($q); 
             
+            foreach($lg->fetchAll() as $row){
+                $uid=$row['userid'];
+            }
+            
+            $sql="SELECT u.id,u.name,u.type,b.id,l.bookid,l.userid,l.bookreturn,l.returncheck FROM log l INNER JOIN user u ON u.id=l.userid INNER JOIN book b WHERE l.userid='$uid' AND l.bookid='$lid'";
+            $lg=$this->connection->query($sql); 
+            return $lg;
+
+            /*$q="SELECT * FROM log WHERE bookid='$lid'";
+            $lg=$this->connection->query($q); 
+                     
+            return $lg;
+            */
+            /*foreach($lg->fetchAll() as $row){
+                //$uid=$row['userid'];
+                $rcheck=$row['returncheck'];
+            }
+            if($rcheck == '0'){
+                $q="SELECT * FROM issuebook WHERE bookid='$lid'";
+                $ib=$this->connection->query($q);                
+                return $ib;
+
+            }
+            else{
+                $q="SELECT * FROM ";
+            }
+            */
+            /*
             $q="SELECT * FROM book WHERE id='$lid'";
             $res=$this->connection->query($q);
             foreach($res->fetchAll() as $row){
@@ -348,6 +404,7 @@ session_start();
             $sql="SELECT l.bookid,i.issuename,i.issuetype,i.issuedays,i.issuedate,i.issuereturn,l.returncheck FROM issuebook i RIGHT JOIN log l ON l.bookid=i.bookid AND l.userid WHERE l.issuebook='$bname'";
             $data=$this->connection->query($sql);
             return $data;
+            */
             
         }
         function getbookissue(){
@@ -498,17 +555,13 @@ session_start();
             $ibookres=$this->connection->query($q);
             $rs=$ibookres->rowCount();
 
-            $q="SELECT * FROM book where bookname='$ibook'";
-            $bookres=$this->connection->query($q);
-            
             if($rs > 0){
             foreach($ibookres->fetchAll() as $row){
                 $ibook=$row['issuebook'];
                 $uid=$row['userid'];
+                $bid=$row['bookid'];
             }
-            foreach($bookres->fetchAll() as $row){
-                $bid=$row['id'];
-            }
+           
             
             $db="INSERT INTO log(userid, bookid, issuebook, bookreturn, returncheck)VALUES('$uid','$bid', '$ibook', '$rdate', '1')";
             $this->connection->exec($db);

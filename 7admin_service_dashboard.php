@@ -310,12 +310,12 @@ th{
                         foreach($recordset as $row){
                         $table.="<tr>";
                         "<td>$row[0]</td>";
-                        $table.="<td>$row[2]</td>";
                         $table.="<td>$row[3]</td>";
-                        $table.="<td>$row[6]</td>";
+                        $table.="<td>$row[4]</td>";
                         $table.="<td>$row[7]</td>";
                         $table.="<td>$row[8]</td>";
-                        $table.="<td>$row[4]</td>";
+                        $table.="<td>$row[9]</td>";
+                        $table.="<td>$row[5]</td>";
                         $table.="<td><button type='button' class='btn btn-primary'><a href='7admin_service_dashboard.php?returnid=$row[0]'>RETURN</a></button></td>";
                         $table.="</tr>";
                         }
@@ -325,8 +325,9 @@ th{
                 </div>
             </div>
 
+            
             <div class="rightinnerdiv">
-                <div id="return" class="innerright portion" style="<?php if(!empty($_REQUEST['returnid'])){ $returnid=$_REQUEST['returnid']; echo "display:none";}else{echo "display:none";} ?>">
+                <div id="return" class="innerright portion" style="<?php if(!empty($_REQUEST['returnid'])){ $returnid=$_REQUEST['returnid']; echo "display:none";}else{  echo "display:none";}?>">
                     <button class="greenbtn">Return</button>
                         <?php                            
                             $obj=new data;
@@ -401,38 +402,49 @@ th{
                         $obj->setconnection();
                         $obj->booklog($lid);
                         $result=$obj->booklog($lid);
-                    ?>
-                    <table class='tbl-qa'>
-                        <thead>
-                            <tr>
-                                <th class='table-header' width='20%'>Issued By</th>                                
-                                <th class='table-header' width='20%'>Type</th>
-                                <th class='table-header' width='20%'>Days</th>
-                                <th class='table-header' width='20%'>Issuedate</th>
-                                <th class='table-header' width='20%'>Issuereturn</th>
-                                <th class='table-header' width='20%'>Return Check</th>                            
-                            </tr>
-                        </thead>
-                        <tbody id='table-body'>
-                            <?php
+                        //$rescount=$result->rowCount();
+                        /*
+                        $obj=new data();
+                        $obj->setconnection();
+                        $obj->userlog($lid);
+                        $data=$obj->userlog($lid);
+                        //$uname=$data[0];
+                        //$type=$data[1];
+                        */
+
+                        
+                        $idate=""; 
+                        $ireturn="";
+                        $rcheck="";
+                        
+                    ?>                      
+                        <table class='tbl-qa'>
+                            <thead>
+                                <tr>
+                                    <th class='table-header' width='20%'>Issued By</th>                                
+                                    <th class='table-header' width='20%'>Type</th>
+                                    <th class='table-header' width='20%'>Issuedate</th>
+                                    <th class='table-header' width='20%'>Issuereturn</th>
+                                    <th class='table-header' width='20%'>Return Check</th>                            
+                                </tr>
+                            </thead>                            
+                        <?php                           
+
                             if(!empty($result)) { 
-                                foreach($result as $row) {
+                                foreach($result->fetchAll() as $row) {  
                             ?>
                             <tr class='table-row'>
-                                <td><?php echo $row['issuename']; ?></td>
-                                <td><?php echo $row['issuetype']; ?></td>
-                                <td><?php echo $row['issuedays']; ?></td>
-                                <td><?php echo $row['issuedate']; ?></td>
-                                <td><?php echo $row['issuereturn']; ?></td>
-                                <td><?php echo $row['returncheck']; ?></td>                            
+                            <td><?php echo $row['name'];?></td>
+                            <td><?php echo $row['type'];?></td>
+                            <td><?php echo $row['bookreturn'];?></td>
+                            <td><?php echo $row['bookreturn'];?></td>
+                            <td><?php echo $row['returncheck'];?></td>                          
                             </tr>
-                            <?php
-                                }
+                             <?php
                             }
-                            ?>
-                        </tbody>
-                    </table>
-                    
+                        }   
+                        ?>
+                        </table> 
                 </div>
             </div>
 
