@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 13, 2022 at 09:48 AM
+-- Generation Time: May 20, 2022 at 10:50 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -65,7 +65,7 @@ CREATE TABLE `book` (
 --
 
 INSERT INTO `book` (`id`, `bookpic`, `bookname`, `bookdetail`, `bookauthor`, `bookpub`, `branch`, `bookprice`, `bookquantity`, `bookava`, `bookrent`) VALUES
-(6, 'arrow.jpg', 'Art Of Living', 'Dhamma', 'VRI', 'VRI', 'Other', '50', '100', 98, 2),
+(6, 'arrow.jpg', 'Art Of Living', 'Dhamma', 'VRI', 'VRI', 'Other', '50', '100', 97, 3),
 (8, 'arrow.png', 'Harry Potter', 'Magical', 'JK Rowling', 'Oxford', 'Other', '400', '100', 99, 1),
 (9, 'arrow.jpg', 'Chronicles of Buddha', 'Stories', 'VRI', 'VRI', 'Other', '100', '50', 48, 2),
 (10, 'Screenshot 2021-06-22 221', 'Ikigai', 'Goal', 'Wan San', 'Watasiwa', 'Other', '500', '500', 500, 0),
@@ -99,7 +99,8 @@ INSERT INTO `issuebook` (`id`, `userid`, `bookid`, `issuename`, `issuebook`, `is
 (99, 1, 8, 'Sujay', 'Harry Potter', 'Student', 76, '13/05/22', '28/07/22', 0),
 (100, 8, 6, 'tulika', 'Art Of Living', 'Student', 65, '13/05/22', '17/07/22', 0),
 (101, 1, 9, 'Sujay', 'Chronicles of Buddha', 'Student', 55, '13/05/22', '07/07/22', 0),
-(102, 8, 9, 'tulika', 'Chronicles of Buddha', 'Student', 56, '13/05/22', '08/07/22', 0);
+(102, 8, 9, 'tulika', 'Chronicles of Buddha', 'Student', 56, '13/05/22', '08/07/22', 0),
+(104, 7, 6, 'ankit', 'Art Of Living', 'Student', 70, '15/05/22', '24/07/22', 0);
 
 -- --------------------------------------------------------
 
@@ -130,7 +131,8 @@ INSERT INTO `log` (`id`, `userid`, `bookid`, `bookissue`, `issuebook`, `bookretu
 (509, 1, 9, '13/05/22', 'Chronicles of Buddha', '07/07/22', 0),
 (510, 8, 9, '13/05/22', 'Chronicles of Buddha', '08/07/22', 0),
 (511, 10, 9, '13/05/22', 'Chronicles of Buddha', '07/06/22', 0),
-(512, 10, 9, '13/05/22', 'Chronicles of Buddha', '13/05/22', 1);
+(512, 10, 9, '13/05/22', 'Chronicles of Buddha', '13/05/22', 1),
+(513, 7, 6, '15/05/22', 'Art Of Living', '24/07/22', 0);
 
 -- --------------------------------------------------------
 
@@ -244,13 +246,13 @@ ALTER TABLE `book`
 -- AUTO_INCREMENT for table `issuebook`
 --
 ALTER TABLE `issuebook`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=104;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=105;
 
 --
 -- AUTO_INCREMENT for table `log`
 --
 ALTER TABLE `log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=513;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=514;
 
 --
 -- AUTO_INCREMENT for table `requestbook`
